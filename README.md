@@ -34,3 +34,8 @@ a. **Install dependencies**: numpy, matplotlib, and casadi.
 b. **Run the script**: python <script_name>.py.
 
 c. **Generated plots and a trajectory simulation visualization will be saved as .png files.**
+
+# References
+a. A Collision Cone Approach for Control Barrier Functions, Manan Tayal and Bhavya Giri Goswami and Karthik Rajgopal and Rajpal Singh and Tejas Rao and Jishnu Keshavan and Pushpak Jagtap and Shishir Kolathaya, 2024, 2403.07043, https://arxiv.org/abs/2403.07043
+
+
