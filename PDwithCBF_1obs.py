@@ -174,7 +174,7 @@ def solve_collision_cone_cbf(a_d, alpha_d, car_state, obstacle, gamma, dt, l):
 def run_simulation():
     dt = 0.1
     num_steps = 500
-    gamma = 7
+    gamma = 5
     l = 0.075
     start = (-5.0, -5.0)
     goal = (5.0, 5.0)
