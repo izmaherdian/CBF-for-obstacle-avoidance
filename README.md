@@ -35,6 +35,9 @@ b. **Run the script**: python <script_name>.py.
 
 c. **Generated plots and a trajectory simulation visualization will be saved as .png files.**
 
+# Results
+![final_trajectory_dynamic](https://github.com/user-attachments/assets/d7972b9f-7ccd-44cd-bff3-e075c75aa315)
+
 # References
 a. A Collision Cone Approach for Control Barrier Functions, Manan Tayal and Bhavya Giri Goswami and Karthik Rajgopal and Rajpal Singh and Tejas Rao and Jishnu Keshavan and Pushpak Jagtap and Shishir Kolathaya, 2024, 2403.07043, https://arxiv.org/abs/2403.07043
 
