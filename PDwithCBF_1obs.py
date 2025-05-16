@@ -233,8 +233,8 @@ def run_simulation():
         angular_velocities.append(car.omega)
         angular_accelerations.append(alpha_opt)
 
-        car_plot.set_data(car.x, car.y)                                    # Update visualization
-        car_traj_plot.set_data(car_x_traj, car_y_traj)
+        car_plot.set_data([car.x], [car.y])                                    # Update visualization
+        car_traj_plot.set_data([car_x_traj], [car_y_traj])
         trajectory_plot.set_data(x_ref_traj[:current_waypoint + 1], y_ref_traj[:current_waypoint + 1])
         fig.canvas.draw()
         fig.canvas.flush_events()
@@ -246,62 +246,62 @@ def run_simulation():
 
     plt.ioff()
 
-    plt.savefig('final_trajectory.png')                                    # Save the final trajectory figure
+    # plt.savefig('final_trajectory.png')                                    # Save the final trajectory figure
 
     plt.show()
 
-    plt.figure()                                                           # Plot Velocity vs Time Steps
-    plt.plot(time_steps, velocities, label='Velocity')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Linear Velocity (m/s)')
-    plt.title('Velocity vs Time Steps')
-    plt.legend()
-    plt.grid(True)
-    plt.savefig('velocity_vs_time.png')
-    plt.show()
+    # plt.figure()                                                           # Plot Velocity vs Time Steps
+    # plt.plot(time_steps, velocities, label='Velocity')
+    # plt.xlabel('Time (s)')
+    # plt.ylabel('Linear Velocity (m/s)')
+    # plt.title('Velocity vs Time Steps')
+    # plt.legend()
+    # plt.grid(True)
+    # # plt.savefig('velocity_vs_time.png')
+    # plt.show()
 
-    plt.figure()                                                           # Plot Acceleration vs Time Steps
-    plt.plot(time_steps, accelerations, label='Acceleration')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Linear Acceleration (m/s²)')
-    plt.title('Acceleration vs Time Steps')
-    plt.legend()
-    plt.grid(True)
-    plt.savefig('acceleration_vs_time.png')
-    plt.show()
+    # plt.figure()                                                           # Plot Acceleration vs Time Steps
+    # plt.plot(time_steps, accelerations, label='Acceleration')
+    # plt.xlabel('Time (s)')
+    # plt.ylabel('Linear Acceleration (m/s²)')
+    # plt.title('Acceleration vs Time Steps')
+    # plt.legend()
+    # plt.grid(True)
+    # # plt.savefig('acceleration_vs_time.png')
+    # plt.show()
 
-    if h_values:                                                           # Plot h vs Time Steps when CBF is active
-        plt.figure()
-        plt.plot(h_time_steps, h_values, label='Barrier Function h')
-        plt.xlabel('Time (s)')
-        plt.ylabel('h Value')
-        plt.title('Barrier Function h vs Time Steps (CBF Active)')
-        plt.legend()
-        plt.grid(True)
-        plt.savefig('h_vs_time.png')
-        plt.show()
-    else:
-        print("CBF was not active during the simulation; no h values to plot.")
+    # if h_values:                                                           # Plot h vs Time Steps when CBF is active
+    #     plt.figure()
+    #     plt.plot(h_time_steps, h_values, label='Barrier Function h')
+    #     plt.xlabel('Time (s)')
+    #     plt.ylabel('h Value')
+    #     plt.title('Barrier Function h vs Time Steps (CBF Active)')
+    #     plt.legend()
+    #     plt.grid(True)
+    #     # plt.savefig('h_vs_time.png')
+    #     plt.show()
+    # else:
+    #     print("CBF was not active during the simulation; no h values to plot.")
 
-    plt.figure()                                                           # Plot Angular Velocity vs Time Steps
-    plt.plot(time_steps, angular_velocities, label='Angular Velocity')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Angular Velocity (rad/s)')
-    plt.title('Angular Velocity vs Time Steps')
-    plt.legend()
-    plt.grid(True)
-    plt.savefig('angular_velocity_vs_time.png')
-    plt.show()
+    # plt.figure()                                                           # Plot Angular Velocity vs Time Steps
+    # plt.plot(time_steps, angular_velocities, label='Angular Velocity')
+    # plt.xlabel('Time (s)')
+    # plt.ylabel('Angular Velocity (rad/s)')
+    # plt.title('Angular Velocity vs Time Steps')
+    # plt.legend()
+    # plt.grid(True)
+    # # plt.savefig('angular_velocity_vs_time.png')
+    # plt.show()
 
-    plt.figure()                                                           # Plot Angular Acceleration vs Time Steps
-    plt.plot(time_steps, angular_accelerations, label='Angular Acceleration')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Angular Acceleration (rad/s²)')
-    plt.title('Angular Acceleration vs Time Steps')
-    plt.legend()
-    plt.grid(True)
-    plt.savefig('angular_acceleration_vs_time.png')
-    plt.show()
+    # plt.figure()                                                           # Plot Angular Acceleration vs Time Steps
+    # plt.plot(time_steps, angular_accelerations, label='Angular Acceleration')
+    # plt.xlabel('Time (s)')
+    # plt.ylabel('Angular Acceleration (rad/s²)')
+    # plt.title('Angular Acceleration vs Time Steps')
+    # plt.legend()
+    # plt.grid(True)
+    # # plt.savefig('angular_acceleration_vs_time.png')
+    # plt.show()
 
 if __name__ == "__main__":
     run_simulation()
