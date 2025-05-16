@@ -1,48 +1,89 @@
-import numpy as np
+"""
+人工势场寻路算法实现
+改进人工势场，解决不可达问题，仍存在局部最小点问题
+"""
+from Original_APF import APF, Vector2d
 import matplotlib.pyplot as plt
-import casadi as ca
+import math
+from matplotlib.patches import Circle
+import random
 
-class Car:
-    def __init__(self, x, y, theta, v=0.0, omega=0.0):
-        self.x = x
-        self.y = y
-        self.theta = theta
-        self.v = v
-        self.omega = omega
 
-    def update_dynamics(self, a, alpha, dt):
-        self.v += a * dt
-        self.omega += alpha * dt
-        self.x += self.v * np.cos(self.theta) * dt
-        self.y += self.v * np.sin(self.theta) * dt
-        self.theta += self.omega * dt
-        self.theta = (self.theta + np.pi) % (2 * np.pi) - np.pi             # Normalize theta to [-pi, pi]
+def check_vec_angle(v1: Vector2d, v2: Vector2d):
+    v1_v2 = v1.deltaX * v2.deltaX + v1.deltaY * v2.deltaY
+    angle = math.acos(v1_v2 / (v1.length * v2.length)) * 180 / math.pi
+    return angle
 
-def generate_reference_trajectory(start, goal, num_points=100):
-    x_ref = np.linspace(start[0], goal[0], num_points)
-    y_ref = np.linspace(start[1], goal[1], num_points)
-    return x_ref, y_ref
 
-def pd_controller(car_state, x_ref, y_ref, dt):
-    kp_linear = 1.0
-    kp_angular = 1.5
+class APF_Improved(APF):
+    def __init__(self, start: (), goal: (), obstacles: [], k_att: float, k_rep: float, rr: float,
+                 step_size: float, max_iters: int, goal_threshold: float, is_plot=False):
+        self.start = Vector2d(start[0], start[1])
+        self.current_pos = Vector2d(start[0], start[1])
+        self.goal = Vector2d(goal[0], goal[1])
+        self.obstacles = [Vector2d(OB[0], OB[1]) for OB in obstacles]
+        self.k_att = k_att
+        self.k_rep = k_rep
+        self.rr = rr  # 斥力作用范围
+        self.step_size = step_size
+        self.max_iters = max_iters
+        self.iters = 0
+        self.goal_threashold = goal_threshold
+        self.path = list()
+        self.is_path_plan_success = False
+        self.is_plot = is_plot
+        self.delta_t = 0.01
 
-    dx = x_ref - car_state['x']
-    dy = y_ref - car_state['y']
-    distance = np.hypot(dx, dy)
-    angle_to_ref = np.arctan2(dy, dx)
+    def repulsion(self):
+        """
+        斥力计算, 改进斥力函数, 解决不可达问题
+        :return: 斥力大小
+        """
+        rep = Vector2d(0, 0)  # 所有障碍物总斥力
+        for obstacle in self.obstacles:
+            # obstacle = Vector2d(0, 0)
+            obs_to_rob = self.current_pos - obstacle
+            rob_to_goal = self.goal - self.current_pos
+            if (obs_to_rob.length > self.rr):  # 超出障碍物斥力影响范围
+                pass
+            else:
+                rep_1 = Vector2d(obs_to_rob.direction[0], obs_to_rob.direction[1]) * self.k_rep * (
+                        1.0 / obs_to_rob.length - 1.0 / self.rr) / (obs_to_rob.length ** 2) * (rob_to_goal.length ** 2)
+                rep_2 = Vector2d(rob_to_goal.direction[0], rob_to_goal.direction[1]) * self.k_rep * ((1.0 / obs_to_rob.length - 1.0 / self.rr) ** 2) * rob_to_goal.length
+                rep +=(rep_1+rep_2)
+        return rep
 
-    angle_error = angle_to_ref - car_state['theta']
-    angle_error = (angle_error + np.pi) % (2 * np.pi) - np.pi             # Normalize angle error to [-pi, pi]
 
-    v_max = 2.0                                                           # Maximum linear velocity
-    omega_max = np.pi                                                     # Maximum angular velocity
+if __name__ == '__main__':
+    # 相关参数设置
+    k_att, k_rep = 1.0, 0.8
+    rr = 3
+    step_size, max_iters, goal_threashold = .2, 500, .2  # 步长0.5寻路1000次用时4.37s, 步长0.1寻路1000次用时21s
+    step_size_ = 2
 
-    v_desired = kp_linear * distance
-    v_desired = np.clip(v_desired, -v_max, v_max)
+    # 设置、绘制起点终点
+    start, goal = (0, 0), (15, 15)
+    is_plot = True
+    if is_plot:
+        fig = plt.figure(figsize=(7, 7))
+        subplot = fig.add_subplot(111)
+        subplot.set_xlabel('X-distance: m')
+        subplot.set_ylabel('Y-distance: m')
+        subplot.plot(start[0], start[1], '*r')
+        subplot.plot(goal[0], goal[1], '*r')
+    # 障碍物设置及绘制
+    obs = [[1, 4], [2, 4], [3, 3], [6, 1], [6, 7], [10, 6], [11, 12], [14, 14]]
+    print('obstacles: {0}'.format(obs))
+    for i in range(0):
+        obs.append([random.uniform(2, goal[1] - 1), random.uniform(2, goal[1] - 1)])
 
-    omega_desired = kp_angular * angle_error
-    omega_desired = np.clip(omega_desired, -omega_max, omega_max)
+    if is_plot:
+        for OB in obs:
+            circle = Circle(xy=(OB[0], OB[1]), radius=rr, alpha=0.3)
+            subplot.add_patch(circle)
+            subplot.plot(OB[0], OB[1], 'xk')
+    # t1 = time.time()
+    # for i in range(1000):
 
     a_desired = (v_desired - car_state['v']) / dt
     alpha_desired = (omega_desired - car_state['omega']) / dt
